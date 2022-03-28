@@ -1,4 +1,4 @@
-sequence_number,US,source_a,source_c,source_b,source_d,source_e,source_m,source_o,source_h,source_r,source_s,source_t,source_u,source_p,source_x,source_w,Freq,last_update_days_ago,1st_update_days_ago,Web order,Gender=male,Address_is_res,Purchase,Spending
+sequence_number,US,source_a,source_c,source_b,source_d,source_e,source_m,source_o,source_h,source_r,source_s,source_t,source_u,source_p,source_x,source_w,Freq,last_update_days_ago,1st_update_days_ago,Weborder,Gender,Address_is_res,Purchase,Spending
 1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,2,3662,3662,1,0,1,1,128
 2,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2900,2900,1,1,0,0,0
 3,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,2,3883,3914,0,0,0,1,127
