@@ -2,6 +2,19 @@ if(!require(readr)){
     install.packages("readr")
     library(readr)
 }
+if(!require(forecast)){
+    install.packages("forecast")
+    library(forecast)
+}
+if(!require(ggplot2)){
+    install.packages("ggplot2")
+    library(ggplot2)
+}
+if(!require(pivottabler)){
+    install.packages("pivottabler")
+    library(pivottabler)
+}
+options(browser="firefox")
 
 dataOriginal <- read_csv("Tayko.csv", col_types = "nffffffffffffffffnnnffffn")
 
@@ -12,11 +25,6 @@ df$updateRange = cut(df$last_update_days_ago, c(0,1000,2000,3000,4000,5000),labe
 df$SpendingRange = cut(df$Spending, c(0,300,600,900,1200,1500,1800),labels = c("0-300","301-600","601-900","901-1200","1201-1500","1500+"), include.lowest = TRUE)
 
 #Tabla Dinamica
-if(!require(pivottabler)){
-    install.packages("pivottabler")
-    library(pivottabler)
-}
-options(browser="firefox")
 
 #Address_is_res
 print("---------------------")
@@ -146,13 +154,40 @@ print("Desviacion estandar")
 desviacion <- sd(df$Spending)
 print(desviacion)
 
-if(!require(ggplot2)){
-    install.packages("ggplot2")
-    library(ggplot2)
-}
+
+set.seed(2347)
+ind <- sample(nrow(df), round(nrow(df)*0.8),replace = FALSE)
+df.train <- df[ind,]
+df.test <- df[-ind,]
+
+modelo <- lm(Spending ~ last_update_days_ago+Address_is_res+US+Gender+Weborder+Freq, data = df.train)
+options(scipen = 999, digits = 0)
+print("Modelo")
+print(summary(modelo))
+
+
+predicion <- predict(modelo,df.test)
+residuos <- df.train$Spending - predicion
+
+eliminacion <- step(modelo, direction = "backward")
+print("Eliminacion de Predictores")
+print(summary(eliminacion))
+
+eliminacion.pred <- predict(eliminacion,df.test)
+certeza <- accuracy(eliminacion.pred,df.test$Spending)
+print(certeza)
+
+print(summary(eliminacion.pred))
+
+invisible(readline(prompt="Press [enter] to continue"))
 
 plot(df$Freq, df$Spending, main="Freq vs Spending")
 abline(lm(df$Spending~df$Freq),col="yellow")
+invisible(readline(prompt="Press [enter] to continue"))
 
 plot(df$last_update_days_ago, df$Spending, main="Last Update vs Spending")
 abline(lm(df$Spending~df$last_update_days_ago),col="yellow")
+invisible(readline(prompt="Press [enter] to continue"))
+
+hist(residuos, breaks = 25, xlab = "Residuals", main = "")
+invisible(readline(prompt="Press [enter] to continue"))
